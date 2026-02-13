@@ -15,7 +15,6 @@ class FileLinesSeeker(val searchQuery: String, filePath: String) {
     }
 
     fun printLines() {
-        println()
         gotFile.useLines {
             println("[$gotFile]:")
 
