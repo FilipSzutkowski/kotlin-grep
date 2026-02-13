@@ -29,4 +29,18 @@ class FileLinesSeeker(val searchQuery: String, filePath: String) {
         }
     }
 
+    fun getLines(): List<String> {
+        gotFile.useLines { lines ->
+            return lines
+                .withIndex()
+                .filter { str ->
+                    str.value.contains(searchQuery, true)
+                }
+                .map { str ->
+                    "[Line ${str.index + 1}]: ${str.value}"
+                }
+                .toList()
+        }
+    }
+
 }
