@@ -34,15 +34,12 @@ Searching for 'common' in:
    - testdata/another.txt
 
 [testdata/something.txt]:
- Time since start: 26.662ms 
   - <Line 3> Common yes!
 
 [testdata/else.txt]:
- Time since start: 26.667ms 
   - <Line 6> Common text
 
-[testdata/another.txt]:
- Time since start: 26.764ms 
+[testdata/another.txt]: 
   - <Line 5> Common another!
   - <Line 7> More common!
 ```
