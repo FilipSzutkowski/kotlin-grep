@@ -20,6 +20,9 @@ common testdata/something.txt testdata/else.txt testdata/another.txt
 
 > File paths after that are which files the program will search in
 
+If you are using a JetBrains IDE, you can use `Main.kt` in the run script and paste the arguments from above into
+`Program Arguments` in the configuration. This repo includes some test files in the `testdata` directory.
+
 ### Example output
 
 ```bash
