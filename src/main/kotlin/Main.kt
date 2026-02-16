@@ -1,9 +1,11 @@
 package org.example
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlin.time.Clock
 
+@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun main(args: Array<String>) {
     val query = args.getOrNull(0)
     val fPaths = args.slice(1..args.lastIndex)
@@ -21,24 +23,28 @@ suspend fun main(args: Array<String>) {
 
     println("")
 
-    val startTime = Clock.System.now()
 
     coroutineScope {
-        fPaths.forEach {
-            this.launch {
-                println()
-                println("[$it]: Time since start: ${Clock.System.now().minus(startTime)}")
+        val channels = fPaths.map { filePath ->
+            this.produce {
+                var resMsg = "[$filePath]:\n"
+
                 try {
-                    println("[$it]: ")
-                    FileLinesSeeker(query, it)
+                    FileLinesSeeker(query, filePath)
                         .getLines()
                         .forEach { line ->
-                            println("   - $line")
+                            resMsg = "$resMsg  - <Line ${line.lineNumber}> ${line.content}\n"
                         }
                 } catch (e: Exception) {
-                    println(e.message ?: "Unknown error")
+                    resMsg = "$resMsg  ${e.message ?: "Unknown Error"}"
+                } finally {
+                    send(resMsg)
                 }
             }
+        }
+
+        for (c in channels) {
+            c.consumeEach { msg -> println(msg) }
         }
     }
 }

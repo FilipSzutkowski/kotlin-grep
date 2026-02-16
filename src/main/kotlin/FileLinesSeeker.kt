@@ -2,6 +2,8 @@ package org.example
 
 import java.io.File
 
+data class MatchingLine(val lineNumber: Int, val content: String)
+
 /**
  * @throws [IllegalStateException] if the file does not exist, is not a file or is not readable.
  */
@@ -14,22 +16,7 @@ class FileLinesSeeker(val searchQuery: String, filePath: String) {
         check(gotFile.canRead()) { "'${gotFile.absolutePath}' is not readable" }
     }
 
-    fun printLines() {
-        gotFile.useLines {
-            println("[$gotFile]:")
-
-            val res = it.filter { str ->
-                str.contains(searchQuery, true)
-            }
-
-            res.forEach { line ->
-                println(line)
-            }
-
-        }
-    }
-
-    fun getLines(): List<String> {
+    fun getLines(): List<MatchingLine> {
         gotFile.useLines { lines ->
             return lines
                 .withIndex()
@@ -37,7 +24,7 @@ class FileLinesSeeker(val searchQuery: String, filePath: String) {
                     str.value.contains(searchQuery, true)
                 }
                 .map { str ->
-                    "[Line ${str.index + 1}]: ${str.value}"
+                    MatchingLine(str.index + 1, str.value)
                 }
                 .toList()
         }
